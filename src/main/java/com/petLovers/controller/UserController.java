@@ -38,6 +38,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody @Valid LoginDTO data) {
+        System.out.println(data);
         var token = service.login(data);
         return ResponseEntity.ok().body(new TokenDTO(token));
     }

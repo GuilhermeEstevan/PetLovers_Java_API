@@ -1,5 +1,6 @@
 package com.petLovers.services;
 
+import com.petLovers.domain.user.User;
 import com.petLovers.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,11 @@ public class AuthorizationService implements UserDetailsService {
     UserRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByName(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserDetails user = repository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found!");
+        }
+        return user;
     }
 }

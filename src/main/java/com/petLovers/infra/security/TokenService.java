@@ -22,7 +22,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("petlovers_api")
-                    .withSubject(user.getName())
+                    .withSubject(user.getEmail())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
             return token;
@@ -39,7 +39,6 @@ public class TokenService {
                     .build()
                     .verify(token)
                     .getSubject();
-            System.out.println(response);
             return response;
         } catch (JWTVerificationException e) {
             throw new RuntimeException("Falha na verificação do token: " + e.getMessage(), e);

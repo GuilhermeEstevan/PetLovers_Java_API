@@ -57,8 +57,10 @@ public class UserService {
     }
 
     public String login(LoginDTO data) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.name(), data.password());
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
+        System.out.println(usernamePassword);
         var auth = authenticationManager.authenticate(usernamePassword);
+        System.out.println(auth);
         var token = tokenService.generateToken((User) auth.getPrincipal());
         return token;
     }
