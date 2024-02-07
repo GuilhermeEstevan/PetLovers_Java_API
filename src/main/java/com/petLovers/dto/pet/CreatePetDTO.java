@@ -24,9 +24,8 @@ public record CreatePetDTO(
         @Past
         LocalDate birthday,
         @NotBlank
-        String photo,
-        @NotNull
-        String createdBy
+        String photo
+
 ) {
 
 

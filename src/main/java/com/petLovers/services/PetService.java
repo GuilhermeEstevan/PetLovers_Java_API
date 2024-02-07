@@ -1,6 +1,7 @@
 package com.petLovers.services;
 
 import com.petLovers.domain.pet.Pet;
+import com.petLovers.domain.user.User;
 import com.petLovers.dto.pet.CreatePetDTO;
 import com.petLovers.dto.pet.PetDTO;
 import com.petLovers.dto.pet.UpdatePetDTO;
@@ -8,6 +9,8 @@ import com.petLovers.repositories.PetRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +26,9 @@ public class PetService {
     public PetDTO createPetService(CreatePetDTO data) {
         Pet pet = new Pet();
         BeanUtils.copyProperties(data, pet);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+        pet.setCreatedBy(authenticatedUser.getId());
         pet = repository.save(pet);
         return new PetDTO(pet);
     }
