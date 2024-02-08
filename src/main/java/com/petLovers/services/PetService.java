@@ -40,15 +40,14 @@ public class PetService {
         }
         Pet pet = optionalPet.get();
         BeanUtils.copyProperties(data, pet);
-//        if (data.gender() != null) {
-//            pet.setGender(data.gender());
-//        }
         Pet updatedPet = repository.save(pet);
         return new PetDTO(updatedPet);
     }
 
     public List<PetDTO> getAll() {
-        List<Pet> petList = repository.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+        List<Pet> petList = repository.findAllByCreatedBy(authenticatedUser.getId());
         return petList.stream().map(PetDTO::new).toList();
     }
 
