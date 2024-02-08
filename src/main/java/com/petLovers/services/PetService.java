@@ -5,6 +5,7 @@ import com.petLovers.domain.user.User;
 import com.petLovers.dto.pet.CreatePetDTO;
 import com.petLovers.dto.pet.PetDTO;
 import com.petLovers.dto.pet.UpdatePetDTO;
+import com.petLovers.errors.pet.PetOwnershipException;
 import com.petLovers.repositories.PetRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +24,7 @@ public class PetService {
     PetRepository repository;
 
 
-    public PetDTO createPetService(CreatePetDTO data) {
+    public PetDTO createPet(CreatePetDTO data) {
         Pet pet = new Pet();
         BeanUtils.copyProperties(data, pet);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,9 +37,17 @@ public class PetService {
     public PetDTO updatePet(UpdatePetDTO data, String id) {
         Optional<Pet> optionalPet = repository.findById(id);
         if (optionalPet.isEmpty()) {
-            throw new EntityNotFoundException("Id " + id + " não encontrado!");
+            throw new EntityNotFoundException("Id " + id + " not found!!");
         }
         Pet pet = optionalPet.get();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+        String userId = authenticatedUser.getId();
+        if (!pet.getCreatedBy().equals(userId)) {
+            throw new PetOwnershipException("The pet does not belongs to the current user!");
+        }
+
         BeanUtils.copyProperties(data, pet);
         Pet updatedPet = repository.save(pet);
         return new PetDTO(updatedPet);
@@ -54,9 +63,16 @@ public class PetService {
     public PetDTO getSinglePetById(String id) {
         Optional<Pet> optionalPet = repository.findById(id);
         if (optionalPet.isEmpty()) {
-            throw new EntityNotFoundException("Id " + id + " não encontrado!");
+            throw new EntityNotFoundException("Id " + id + " not found!");
         }
         Pet pet = optionalPet.get();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+        String userId = authenticatedUser.getId();
+        if (!pet.getCreatedBy().equals(userId)) {
+            throw new PetOwnershipException("The pet does not belongs to the current user!");
+        }
         return new PetDTO(pet);
     }
 }
