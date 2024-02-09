@@ -27,9 +27,8 @@ public record PetDTO(
         @NotNull
         LocalDate birthday,
         @NotBlank
-        String photo,
-        @NotBlank
-        String createdBy
+        String photo
+
 ) {
     public PetDTO(Pet pet) {
         this(
@@ -40,7 +39,7 @@ public record PetDTO(
                 pet.getGender(),
                 pet.getColor(),
                 pet.getBirthday(),
-                pet.getPhoto(),
-                pet.getCreatedBy());
+                pet.getPhoto()
+        );
     }
 }
