@@ -16,6 +16,29 @@ public class MedicationInfo {
     private String frequency;
     private LocalDate nextMedicationDate;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_card_id") // Nome da coluna na tabela medication_info que referencia PetCard
+    private PetCard petCard;
+
+    public MedicationInfo() {
+    }
+
+    public MedicationInfo(Long id, String medicationType, String frequency, LocalDate nextMedicationDate, PetCard petCard) {
+        this.id = id;
+        this.medicationType = medicationType;
+        this.frequency = frequency;
+        this.nextMedicationDate = nextMedicationDate;
+        this.petCard = petCard;
+    }
+
+    public PetCard getPetCard() {
+        return petCard;
+    }
+
+    public void setPetCard(PetCard petCard) {
+        this.petCard = petCard;
+    }
+
     public String getMedicationType() {
         return medicationType;
     }

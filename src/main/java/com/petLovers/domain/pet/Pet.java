@@ -1,9 +1,12 @@
 package com.petLovers.domain.pet;
 
 import com.petLovers.domain.pet.enums.Gender;
+import com.petLovers.domain.pet.petCard.PetCard;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Table(name = "pets")
@@ -21,6 +24,9 @@ public class Pet {
     private LocalDate birthday;
     private String photo;
     private String createdBy;
+
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    private List<PetCard> petCards = new ArrayList<>();
 
     public Pet() {
 
@@ -110,6 +116,10 @@ public class Pet {
         this.createdBy = createdBy;
     }
 
+    public void addPetCard(PetCard petCard) {
+        petCards.add(petCard);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -137,5 +147,7 @@ public class Pet {
                 ", createdBy='" + createdBy + '\'' +
                 '}';
     }
+
+
 }
 
